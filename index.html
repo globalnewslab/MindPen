@@ -870,5 +870,63 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
-</body>
+<!-- AI 피드백 섹션 -->
+<section style="padding:80px 5%;background:#f7f9fc;">
+  <div style="max-width:700px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:40px;">
+      <div style="font-size:0.75rem;font-weight:800;letter-spacing:3px;color:#00C9A7;margin-bottom:12px;">AI FEEDBACK</div>
+      <h2 style="font-family:'Nunito',sans-serif;font-size:2rem;font-weight:900;color:#1A1A2E;">직접 써보고 피드백 받아보세요</h2>
+      <p style="color:#8A8A9A;margin-top:12px;">실제 어떤 피드백이 오는지 체험해보세요</p>
+    </div>
+    <div style="background:white;border-radius:20px;padding:32px;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+        <select id="subject" style="padding:10px 16px;border-radius:50px;border:2px solid #E8ECF2;font-size:0.9rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">
+          <option value="essay">✏️ 논술</option>
+          <option value="english">🌍 영어</option>
+        </select>
+        <select id="level" style="padding:10px 16px;border-radius:50px;border:2px solid #E8ECF2;font-size:0.9rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">
+          <option value="초등 5~6학년">초등 5~6학년</option>
+          <option value="중등">중등</option>
+        </select>
+      </div>
+      <textarea id="answer" placeholder="여기에 답안을 입력하세요..." style="width:100%;height:160px;padding:16px;border-radius:14px;border:2px solid #E8ECF2;font-size:0.9rem;font-family:'Noto Sans KR',sans-serif;resize:vertical;outline:none;line-height:1.7;"></textarea>
+      <button onclick="getFeedback()" style="width:100%;margin-top:14px;padding:16px;background:linear-gradient(135deg,#00C9A7,#00a88e);color:white;border:none;border-radius:50px;font-size:1rem;font-weight:800;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">
+        피드백 받기 →
+      </button>
+      <div id="feedback-result" style="display:none;margin-top:20px;padding:20px;background:#e0faf5;border-radius:14px;border-left:4px solid #00C9A7;line-height:1.8;font-size:0.9rem;white-space:pre-line;"></div>
+      <div id="feedback-loading" style="display:none;text-align:center;padding:20px;color:#00C9A7;font-weight:700;">⚡ 피드백 생성 중...</div>
+    </div>
+  </div>
+</section>
+
+<script>
+async function getFeedback() {
+  const answer = document.getElementById('answer').value;
+  const subject = document.getElementById('subject').value;
+  const level = document.getElementById('level').value;
+  
+  if (!answer.trim()) {
+    alert('답안을 입력해주세요!');
+    return;
+  }
+  
+  document.getElementById('feedback-result').style.display = 'none';
+  document.getElementById('feedback-loading').style.display = 'block';
+  
+  try {
+    const response = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answer, subject, level })
+    });
+    const data = await response.json();
+    document.getElementById('feedback-loading').style.display = 'none';
+    document.getElementById('feedback-result').style.display = 'block';
+    document.getElementById('feedback-result').textContent = data.feedback;
+  } catch (error) {
+    document.getElementById('feedback-loading').style.display = 'none';
+    alert('오류가 발생했습니다. 다시 시도해주세요.');
+  }
+}
+</script></body>
 </html>
