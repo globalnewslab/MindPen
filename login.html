@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MindPen — Sign In</title>
+  <title>MindPen — 로그인</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -318,52 +318,52 @@
   <div class="left-panel">
     <div class="brand-block">
       <div class="brand-name">Mind<span>Pen</span></div>
-      <div class="brand-tagline">Your thoughts, written well</div>
+      <div class="brand-tagline">생각을 글로, 글이 실력이 된다</div>
       <div class="deco-line"></div>
       <div class="quote-block">
-        "Writing is thinking.<br>To write well is to think clearly."
+        "글쓰기는 생각하는 것이다.<br>잘 쓴다는 것은 명확하게 생각한다는 것이다."
       </div>
-      <div class="quote-attr">— David McCullough</div>
+      <div class="quote-attr">— 데이비드 맥컬로</div>
     </div>
   </div>
 
   <!-- Right -->
   <div class="right-panel">
     <div class="form-container">
-      <div class="form-eyebrow">Welcome</div>
-      <div class="form-title" id="form-title">Sign in to<br>your journal</div>
+      <div class="form-eyebrow">환영합니다</div>
+      <div class="form-title" id="form-title">저널에<br>로그인하기</div>
 
       <div class="mode-tabs">
-        <div class="mode-tab active" id="tab-login" onclick="switchMode('login')">Sign In</div>
-        <div class="mode-tab" id="tab-signup" onclick="switchMode('signup')">Create Account</div>
+        <div class="mode-tab active" id="tab-login" onclick="switchMode('login')">로그인</div>
+        <div class="mode-tab" id="tab-signup" onclick="switchMode('signup')">회원가입</div>
       </div>
 
       <div class="field">
-        <label>Email</label>
+        <label>이메일</label>
         <input type="email" id="email" placeholder="you@example.com" />
       </div>
 
       <div class="field" id="field-password">
-        <label>Password</label>
+        <label>비밀번호</label>
         <input type="password" id="password" placeholder="••••••••" />
       </div>
 
       <div class="field" id="field-confirm" style="display:none">
-        <label>Confirm Password</label>
+        <label>비밀번호 확인</label>
         <input type="password" id="confirm-password" placeholder="••••••••" />
       </div>
 
       <button class="btn-primary" id="main-btn" onclick="handleAuth()">
-        <span class="btn-text" id="btn-label">Sign In</span>
+        <span class="btn-text" id="btn-label">로그인</span>
         <div class="spinner"></div>
       </button>
 
-      <div class="divider">or</div>
+      <div class="divider">또는</div>
 
-      <button class="link-btn" onclick="handleMagicLink()">Send magic link (passwordless)</button>
+      <button class="link-btn" onclick="handleMagicLink()">매직링크로 로그인 (비밀번호 없이)</button>
 
       <div class="bottom-text" id="bottom-text">
-        Don't have an account? <a onclick="switchMode('signup')">Create one</a>
+        계정이 없으신가요? <a onclick="switchMode('signup')">회원가입</a>
       </div>
     </div>
   </div>
@@ -385,13 +385,13 @@
       document.getElementById('tab-login').classList.toggle('active', m === 'login');
       document.getElementById('tab-signup').classList.toggle('active', m === 'signup');
       document.getElementById('field-confirm').style.display = m === 'signup' ? 'block' : 'none';
-      document.getElementById('btn-label').textContent = m === 'login' ? 'Sign In' : 'Create Account';
+      document.getElementById('btn-label').textContent = m === 'login' ? '로그인' : '회원가입';
       document.getElementById('form-title').innerHTML = m === 'login'
-        ? 'Sign in to<br>your journal'
-        : 'Start your<br>MindPen journey';
+        ? '저널에<br>로그인하기'
+        : 'MindPen<br>시작하기';
       document.getElementById('bottom-text').innerHTML = m === 'login'
-        ? 'Don\'t have an account? <a onclick="switchMode(\'signup\')">Create one</a>'
-        : 'Already have an account? <a onclick="switchMode(\'login\')">Sign in</a>';
+        ? '계정이 없으신가요? <a onclick="switchMode(\'signup\')">회원가입</a>'
+        : '이미 계정이 있으신가요? <a onclick="switchMode(\'login\')">로그인</a>';
     }
 
     // ── Toast ──────────────────────────────────────────────────
