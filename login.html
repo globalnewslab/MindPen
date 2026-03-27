@@ -331,20 +331,39 @@
   <div class="right-panel">
     <div class="form-container">
       <div class="form-eyebrow">환영합니다</div>
-      <div class="form-title">이메일로<br>시작하기</div>
+      <div class="form-title" id="form-title">로그인</div>
+
+      <div class="mode-tabs">
+        <div class="mode-tab active" id="tab-login" onclick="switchMode('login')">로그인</div>
+        <div class="mode-tab" id="tab-signup" onclick="switchMode('signup')">회원가입</div>
+      </div>
 
       <div class="field">
         <label>이메일</label>
         <input type="email" id="email" placeholder="you@example.com" />
       </div>
 
-      <button class="btn-primary" id="main-btn" onclick="handleMagicLink()">
-        <span class="btn-text">매직링크 받기</span>
+      <div class="field" id="field-password">
+        <label>비밀번호</label>
+        <input type="password" id="password" placeholder="••••••••" />
+      </div>
+
+      <div class="field" id="field-confirm" style="display:none">
+        <label>비밀번호 확인</label>
+        <input type="password" id="confirm-password" placeholder="••••••••" />
+      </div>
+
+      <button class="btn-primary" id="main-btn" onclick="handleAuth()">
+        <span class="btn-text" id="btn-label">로그인</span>
         <div class="spinner"></div>
       </button>
 
-      <div class="bottom-text" style="margin-top:20px;">
-        이메일로 로그인 링크를 보내드려요.<br>비밀번호가 필요 없어요 ✨
+      <div class="divider">또는</div>
+
+      <button class="link-btn" onclick="handleMagicLink()">매직링크로 로그인 (비밀번호 없이)</button>
+
+      <div class="bottom-text" id="bottom-text" style="margin-top:20px;">
+        계정이 없으신가요? <a onclick="switchMode('signup')">회원가입</a>
       </div>
     </div>
   </div>
@@ -358,8 +377,7 @@
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    // ── State ──────────────────────────────────────────────────
-    let mode = 'login'; // 'login' | 'signup'
+    let mode = 'login';
 
     function switchMode(m) {
       mode = m;
@@ -367,12 +385,45 @@
       document.getElementById('tab-signup').classList.toggle('active', m === 'signup');
       document.getElementById('field-confirm').style.display = m === 'signup' ? 'block' : 'none';
       document.getElementById('btn-label').textContent = m === 'login' ? '로그인' : '회원가입';
-      document.getElementById('form-title').innerHTML = m === 'login'
-        ? '저널에<br>로그인하기'
-        : 'MindPen<br>시작하기';
+      document.getElementById('form-title').textContent = m === 'login' ? '로그인' : '회원가입';
       document.getElementById('bottom-text').innerHTML = m === 'login'
         ? '계정이 없으신가요? <a onclick="switchMode(\'signup\')">회원가입</a>'
         : '이미 계정이 있으신가요? <a onclick="switchMode(\'login\')">로그인</a>';
+    }
+
+    async function handleAuth() {
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm  = document.getElementById('confirm-password').value;
+
+      if (!email || !password) { showToast('이메일과 비밀번호를 입력해주세요.', 'error'); return; }
+      if (mode === 'signup' && password !== confirm) { showToast('비밀번호가 일치하지 않습니다.', 'error'); return; }
+
+      const btn = document.getElementById('main-btn');
+      btn.disabled = true;
+      btn.classList.add('loading');
+
+      try {
+        let result;
+        if (mode === 'login') {
+          result = await sb.auth.signInWithPassword({ email, password });
+        } else {
+          result = await sb.auth.signUp({ email, password });
+        }
+        if (result.error) throw result.error;
+
+        if (mode === 'signup') {
+          showToast('확인 이메일을 보냈습니다. 메일함을 확인해주세요! ✉️', 'success');
+        } else {
+          showToast('로그인 성공! 이동 중...', 'success');
+          setTimeout(() => window.location.href = 'dashboard.html', 1000);
+        }
+      } catch (err) {
+        showToast(err.message || '오류가 발생했습니다.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+      }
     }
 
     // ── Toast ──────────────────────────────────────────────────
