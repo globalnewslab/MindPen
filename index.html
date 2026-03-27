@@ -607,6 +607,7 @@ footer {
     <button id="feedback-btn" class="trial-submit" onclick="getFeedback()">피드백 받기 →</button>
     <div id="feedback-loading" class="trial-feedback-loading">⚡ 피드백 분석 중...</div>
     <div id="feedback-result" class="trial-feedback"></div>
+      <button id="print-btn" onclick="printFeedback()" style="display:none;margin-top:12px;padding:10px 20px;background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:4px;font-size:0.85rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">🖨 피드백 출력하기</button>
     <div class="trial-notice">
       <strong>안내:</strong> 무료 체험은 1회 제공됩니다. 전체 커리큘럼 이용 및 전문가 첨삭 서비스는 수강 신청 후 이용 가능합니다.
     </div>
@@ -814,7 +815,7 @@ async function getQuestion() {
     document.getElementById('feedback-btn').style.display = 'block';
   } catch (error) {
     document.getElementById('question-loading').style.display = 'none';
-    alert('오류가 발생했습니다. 다시 시도해주세요.');
+    console.log(error);
   }
 }
 
@@ -838,7 +839,7 @@ async function getFeedback() {
     document.getElementById('print-btn').style.display = 'inline-block';
   } catch (error) {
     document.getElementById('feedback-loading').style.display = 'none';
-    alert('오류가 발생했습니다. 다시 시도해주세요.');
+    console.log(error);
   }
 }
 
@@ -881,6 +882,7 @@ function resetTrial() {
   document.getElementById('feedback-btn').style.display = 'none';
   document.getElementById('feedback-result').style.display = 'none';
   document.getElementById('feedback-loading').style.display = 'none';
+  document.getElementById('print-btn').style.display = 'none';
 }
 </script>
 </body>
