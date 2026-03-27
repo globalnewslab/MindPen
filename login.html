@@ -402,7 +402,7 @@
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) throw error;
         showToast('로그인 성공!', 'success');
-        setTimeout(() => window.location.href = 'dashboard.html', 1000);
+        setTimeout(() => window.location.href = 'index.html', 1000);
       } catch (err) {
         showToast(err.message || '오류가 발생했습니다.', 'error');
       }
@@ -445,7 +445,7 @@
           showToast('확인 이메일을 보냈습니다. 메일함을 확인해주세요! ✉️', 'success');
         } else {
           showToast('로그인 성공! 이동 중...', 'success');
-          setTimeout(() => window.location.href = 'dashboard.html', 1000);
+          setTimeout(() => window.location.href = 'index.html', 1000);
         }
       } catch (err) {
         showToast(err.message || '오류가 발생했습니다.', 'error');
@@ -459,7 +459,7 @@
       try {
         const { error } = await sb.auth.signInWithOAuth({
           provider: 'google',
-          options: { redirectTo: window.location.origin + '/dashboard.html' }
+          options: { emailRedirectTo: window.location.origin + '/index.html' }
         });
         if (error) throw error;
       } catch (err) {
