@@ -152,7 +152,7 @@ nav {
 .stat-num {
   font-family: 'Cormorant Garamond', serif;
   font-size: 2.4rem; font-weight: 700; color: var(--gold);
-  line-height: 1;
+  line-height: 1; vertical-align: baseline;
 }
 .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 6px; }
 
@@ -528,7 +528,7 @@ footer {
   <div class="hero-pattern"></div>
   <div class="hero-glow"></div>
   <div class="hero-content">
-    <div class="hero-label">논술 전문 AI 학습 플랫폼</div>
+    <div class="hero-label">브런치 스토리 작가가 설계한 논술 전문 AI 학습 플랫폼</div>
     <h1 class="hero-title">
       생각을 글로,<br>
       글이 <em>실력</em>이 된다
@@ -541,7 +541,7 @@ footer {
       <a href="#trial" class="btn-gold">무료 체험하기 →</a>
       <a href="#consult" class="btn-outline">수강 상담</a>
     </div>
-    <div class="hero-stats">
+    <div class="hero-stats" style="align-items:flex-start;">
       <div>
         <div class="stat-num">3단계</div>
         <div class="stat-label">체계적 커리큘럼</div>
@@ -551,8 +551,8 @@ footer {
         <div class="stat-label">즉시 피드백 시스템</div>
       </div>
       <div>
-        <div class="stat-num">전문가</div>
-        <div class="stat-label">심층 첨삭 서비스</div>
+        <div class="stat-num">2가지</div>
+        <div class="stat-label">수강 플랜</div>
       </div>
     </div>
   </div>
@@ -581,8 +581,8 @@ footer {
     </div>
     <div class="why-card fade-in">
       <div class="why-num">04</div>
-      <div class="why-title">전문가 심층 첨삭</div>
-      <div class="why-text">AI 피드백을 넘어 전문 강사의 심층 첨삭도 받을 수 있습니다. 출력하여 직접 수정하고 싶은 학생을 위한 프린트 기능도 제공합니다.</div>
+      <div class="why-title">출력하고 직접 써보기</div>
+      <div class="why-text">문제를 출력해서 종이에 직접 쓰고 싶은 학생도 OK. 피드백도 출력해서 손으로 수정하며 복습할 수 있습니다.</div>
     </div>
   </div>
 </section>
@@ -593,13 +593,18 @@ footer {
   <h2 class="section-title fade-in" style="color:var(--white);">먼저 체험해보세요</h2>
   <p class="section-desc fade-in">과정과 레벨을 선택하면 문제가 자동 출제됩니다. 무료 체험은 1회 제공됩니다.</p>
   <div class="trial-box fade-in">
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button id="tab-basic" onclick="switchTab('basic')" style="flex:1;padding:10px;background:var(--gold);color:var(--navy);border:none;border-radius:4px;font-size:0.85rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">기본 플랜 체험</button>
+      <button id="tab-premium" onclick="switchTab('premium')" style="flex:1;padding:10px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(201,151,58,0.3);border-radius:4px;font-size:0.85rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">심화 플랜 체험</button>
+    </div>
+    <div id="tab-desc" style="font-size:0.8rem;color:rgba(255,255,255,0.45);margin-bottom:16px;">AI 즉시 피드백 — 논리 구조, 근거, 개념어 분석</div>
     <div class="trial-selects">
       <select id="level" class="trial-select" onchange="resetTrial()">
         <option value="초등 5~6학년 (Bridge)">STEP 1 — Bridge (초등 5~6학년)</option>
         <option value="중등 1~2학년 (Prime)">STEP 2 — Prime (중등 1~2학년)</option>
         <option value="중등 3학년~고등 (Expert)">STEP 3 — Expert (중등 3~고등)</option>
       </select>
-      <button class="trial-btn" onclick="getQuestion()">문제 받기 →</button>
+      <button class="trial-btn" id="trial-start-btn" onclick="startTrial()">문제 받기 →</button>
     </div>
     <div id="question-box" class="trial-question"></div>
     <div id="question-loading" class="trial-loading">📝 문제 생성 중...</div>
@@ -663,46 +668,50 @@ footer {
   </div>
 </section>
 
-<!-- 전문가 첨삭 -->
+<!-- 플랜 -->
 <section class="expert" id="expert">
-  <div class="section-eyebrow fade-in">Expert Review</div>
-  <h2 class="section-title fade-in">전문가 첨삭 서비스</h2>
-  <p class="section-desc fade-in">AI 피드백을 넘어, 전문 강사가 직접 읽고 깊이 있는 첨삭을 제공합니다.</p>
+  <div class="section-eyebrow fade-in">Pricing</div>
+  <h2 class="section-title fade-in">수강 플랜</h2>
+  <p class="section-desc fade-in">두 가지 플랜 중 원하는 것을 선택하세요. 수강 신청은 카카오톡으로 문의주시면 안내해드립니다.</p>
   <div class="expert-grid">
     <div class="expert-card fade-in">
-      <div class="expert-label">AI Feedback</div>
-      <div class="expert-title">AI 즉시 피드백</div>
-      <div class="expert-desc">제출 즉시 논리 구조, 근거, 개념어 활용을 분석합니다.</div>
+      <div class="expert-label">Basic Plan</div>
+      <div class="expert-title">기본 플랜</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--navy);margin:16px 0 4px;">9,900<span style="font-size:1rem;font-weight:500;">원/월</span></div>
+      <div class="expert-desc">AI가 즉시 피드백을 제공합니다.</div>
       <ul class="expert-features">
-        <li>논리 구조 분석</li>
-        <li>근거의 충분함 평가</li>
-        <li>개념어 활용 제안</li>
-        <li>항목별 상세 피드백</li>
-        <li>결과 출력 가능 🖨</li>
+        <li>AI 즉시 피드백</li>
+        <li>논리 구조 · 근거 · 개념어 분석</li>
+        <li>매일 새로운 문제 자동 출제</li>
+        <li>하루 3회 이용 가능</li>
+        <li>문제 · 피드백 출력 가능 🖨</li>
       </ul>
-      <button class="expert-print" onclick="window.print()">🖨 출력하기</button>
+      <a href="#consult" class="btn-navy" style="display:inline-block;font-size:0.88rem;padding:12px 24px;text-decoration:none;border-radius:4px;">카톡으로 신청하기 →</a>
     </div>
     <div class="expert-card featured fade-in">
-      <div class="expert-label">Expert Review</div>
-      <div class="expert-title" style="color:var(--gold);">전문가 심층 첨삭</div>
-      <div class="expert-desc">15년 경력 논술 전문 강사가 직접 읽고 첨삭합니다.</div>
+      <div class="expert-label">Premium Plan</div>
+      <div class="expert-title" style="color:var(--gold);">심화 플랜</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--gold);margin:16px 0 4px;">19,900<span style="font-size:1rem;font-weight:500;color:rgba(255,255,255,0.6);">원/월</span></div>
+      <div class="expert-desc">더 깊이 있는 AI 심층 첨삭을 제공합니다.</div>
       <ul class="expert-features">
-        <li>전문 강사 1:1 직접 첨삭</li>
-        <li>문장별 수정 제안</li>
-        <li>논리 구조 재설계 가이드</li>
-        <li>다음 글쓰기를 위한 코멘트</li>
+        <li>기본 플랜 전체 포함</li>
+        <li>AI 심층 첨삭 (문장별 수정 제안)</li>
+        <li>개선 문장 예시 직접 제시</li>
+        <li>다음 글쓰기 과제 제시</li>
+        <li>하루 5회 이용 가능</li>
         <li>첨삭본 PDF 출력 제공 🖨</li>
       </ul>
-      <a href="#consult" class="btn-gold" style="display:inline-block;font-size:0.88rem;padding:12px 24px;">수강 신청하기 →</a>
+      <a href="#consult" class="btn-gold" style="display:inline-block;font-size:0.88rem;padding:12px 24px;">카톡으로 신청하기 →</a>
     </div>
   </div>
+  <p style="text-align:center;margin-top:32px;font-size:0.82rem;color:var(--gray);">수강 신청 및 결제 문의 → 카카오톡 ID: <strong>MindPen</strong></p>
 </section>
 
 <!-- 프로세스 -->
 <section class="process" id="process">
   <div class="section-eyebrow fade-in" style="color:var(--gold);">How it works</div>
   <h2 class="section-title fade-in">이렇게 진행됩니다</h2>
-  <p class="section-desc fade-in">수강 신청부터 전문가 첨삭까지, 모든 과정이 온라인에서 완결됩니다.</p>
+  <p class="section-desc fade-in">수강 신청부터 AI 첨삭까지, 모든 과정이 온라인에서 완결됩니다.</p>
   <div class="process-steps fade-in">
     <div class="p-step">
       <div class="p-num">01</div>
@@ -722,7 +731,7 @@ footer {
     <div class="p-step">
       <div class="p-num">04</div>
       <div class="p-title">피드백 · 첨삭</div>
-      <div class="p-desc">AI 즉시 피드백 또는 전문가 심층 첨삭을 받습니다</div>
+      <div class="p-desc">AI 즉시 피드백 또는 AI 심층 첨삭을 받습니다</div>
     </div>
   </div>
 </section>
@@ -793,6 +802,76 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
+// 플랜 전환
+let currentPlan = 'basic';
+function switchPlan(plan) {
+  currentPlan = plan;
+  resetTrial();
+  const basicTab = document.getElementById('tab-basic');
+  const premiumTab = document.getElementById('tab-premium');
+  const planLabel = document.getElementById('plan-label');
+  if (plan === 'basic') {
+    basicTab.style.background = 'var(--gold)';
+    basicTab.style.color = 'var(--navy)';
+    premiumTab.style.background = 'transparent';
+    premiumTab.style.color = 'rgba(255,255,255,0.6)';
+    planLabel.textContent = '✦ 기본 플랜 — AI 즉시 피드백';
+  } else {
+    premiumTab.style.background = 'var(--gold)';
+    premiumTab.style.color = 'var(--navy)';
+    basicTab.style.background = 'transparent';
+    basicTab.style.color = 'rgba(255,255,255,0.6)';
+    planLabel.textContent = '✦ 심화 플랜 — AI 심층 첨삭 + 개선 문장 제시';
+  }
+}
+
+// 탭 전환
+let currentPlan = 'basic';
+function switchTab(plan) {
+  currentPlan = plan;
+  resetTrial();
+  const basicBtn = document.getElementById('tab-basic');
+  const premiumBtn = document.getElementById('tab-premium');
+  const desc = document.getElementById('tab-desc');
+  if (plan === 'basic') {
+    basicBtn.style.background = 'var(--gold)';
+    basicBtn.style.color = 'var(--navy)';
+    premiumBtn.style.background = 'rgba(255,255,255,0.08)';
+    premiumBtn.style.color = 'rgba(255,255,255,0.6)';
+    desc.textContent = 'AI 즉시 피드백 — 논리 구조, 근거, 개념어 분석';
+  } else {
+    premiumBtn.style.background = 'var(--gold)';
+    premiumBtn.style.color = 'var(--navy)';
+    basicBtn.style.background = 'rgba(255,255,255,0.08)';
+    basicBtn.style.color = 'rgba(255,255,255,0.6)';
+    desc.textContent = 'AI 심층 첨삭 — 문장별 수정 제안 + 개선 예시 + 다음 과제 제시';
+  }
+}
+
+// 체험 1회 쿠키 제한
+function setCookie(name, value, days) {
+  const d = new Date();
+  d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+  document.cookie = name + "=" + value + ";expires=" + d.toUTCString() + ";path=/";
+}
+function getCookie(name) {
+  const ca = document.cookie.split(';');
+  for (let c of ca) {
+    c = c.trim();
+    if (c.startsWith(name + '=')) return c.substring(name.length + 1);
+  }
+  return "";
+}
+
+function startTrial() {
+  if (getCookie('mindpen_trial') === 'used') {
+    alert('무료 체험은 1회만 가능합니다.\n수강 신청 후 전체 커리큘럼을 이용하세요!\n\n카카오톡 ID: MindPen');
+    return;
+  }
+  setCookie('mindpen_trial', 'used', 30);
+  getQuestion();
+}
+
 // 문제 받기
 async function getQuestion() {
   const level = document.getElementById('level').value;
@@ -832,7 +911,7 @@ async function getFeedback() {
     const response = await fetch('/api/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'getFeedback', answer, subject: 'essay', level })
+      body: JSON.stringify({ action: currentPlan === 'premium' ? 'getDeepFeedback' : 'getFeedback', answer, subject: 'essay', level })
     });
     const data = await response.json();
     document.getElementById('feedback-loading').style.display = 'none';
