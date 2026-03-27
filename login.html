@@ -489,7 +489,7 @@
     (async () => {
       checkAdminMode();
       const { data: { session } } = await sb.auth.getSession();
-      if (session) window.location.href = 'dashboard.html';
+      if (session) window.location.href = 'index.html';
     })();
   </script>
 </body>
