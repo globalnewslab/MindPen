@@ -817,7 +817,7 @@ function getCookie(name) {
 
 function startTrial() {
   if (getCookie('mindpen_trial') === 'used') {
-    alert('무료 체험은 1회만 가능합니다.\n수강 신청 후 전체 커리큘럼을 이용하세요!\n\n카카오톡 ID: MindPen');
+    window.location.href = 'login.html';
     return;
   }
   setCookie('mindpen_trial', 'used', 30);
