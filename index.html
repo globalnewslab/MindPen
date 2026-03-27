@@ -835,10 +835,43 @@ async function getFeedback() {
     document.getElementById('feedback-loading').style.display = 'none';
     document.getElementById('feedback-result').style.display = 'block';
     document.getElementById('feedback-result').textContent = data.feedback;
+    document.getElementById('print-btn').style.display = 'inline-block';
   } catch (error) {
     document.getElementById('feedback-loading').style.display = 'none';
     alert('오류가 발생했습니다. 다시 시도해주세요.');
   }
+}
+
+// 출력
+function printFeedback() {
+  const question = document.getElementById('question-box').textContent;
+  const answer = document.getElementById('answer').value;
+  const feedback = document.getElementById('feedback-result').textContent;
+  const level = document.getElementById('level').value;
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head>
+    <meta charset="UTF-8">
+    <title>MindPen 피드백</title>
+    <style>
+      body { font-family: 'Noto Sans KR', sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; color: #1a1a2e; line-height: 1.8; }
+      h1 { font-size: 1.4rem; color: #0D1B2A; border-bottom: 2px solid #C9973A; padding-bottom: 10px; margin-bottom: 24px; }
+      .label { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #C9973A; margin-bottom: 6px; }
+      .box { background: #f7f7f7; border-left: 3px solid #C9973A; padding: 16px; margin-bottom: 20px; font-size: 0.9rem; white-space: pre-line; }
+      .feedback-box { background: #fdf8f0; border: 1px solid #e8c87a; padding: 16px; border-radius: 4px; font-size: 0.9rem; white-space: pre-line; }
+      .footer { margin-top: 40px; font-size: 0.75rem; color: #aaa; text-align: center; }
+    </style>
+    </head><body>
+    <h1>MindPen 논술 피드백</h1>
+    <div class="label">레벨</div><div class="box">${level}</div>
+    <div class="label">오늘의 문제</div><div class="box">${question}</div>
+    <div class="label">내 답안</div><div class="box">${answer}</div>
+    <div class="label">AI 피드백</div><div class="feedback-box">${feedback}</div>
+    <div class="footer">MindPen · 논술 전문 AI 학습 플랫폼</div>
+    </body></html>
+  `);
+  win.document.close();
+  win.print();
 }
 
 // 초기화
