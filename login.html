@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MindPen — Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --ink: #1a1a18;
+      --paper: #f5f2eb;
+      --cream: #ede9de;
+      --accent: #b5452a;
+      --muted: #8a8578;
+      --border: #d4cfc4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Left panel — decorative */
+    .left-panel {
+      width: 45%;
+      background: var(--ink);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 28px,
+        rgba(255,255,255,0.04) 28px,
+        rgba(255,255,255,0.04) 29px
+      );
+    }
+
+    .brand-block {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.8rem;
+      color: var(--paper);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .brand-name span {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .brand-tagline {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: rgba(245,242,235,0.5);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .deco-line {
+      width: 40px;
+      height: 1px;
+      background: var(--accent);
+      margin: 20px auto;
+    }
+
+    .quote-block {
+      margin-top: 32px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: rgba(245,242,235,0.6);
+      line-height: 1.7;
+      max-width: 280px;
+    }
+
+    .quote-attr {
+      margin-top: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: rgba(245,242,235,0.3);
+      letter-spacing: 0.08em;
+    }
+
+    /* Right panel — form */
+    .right-panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 380px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.15;
+      margin-bottom: 32px;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px 14px;
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: var(--ink);
+      box-shadow: 0 0 0 3px rgba(26,26,24,0.06);
+    }
+
+    .field input::placeholder {
+      color: #c2bcb3;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary:hover { background: #2e2e2a; }
+    .btn-primary:active { transform: scale(0.99); }
+    .btn-primary:disabled { background: var(--muted); cursor: not-allowed; }
+
+    .btn-primary .btn-text { display: inline-block; transition: opacity 0.2s; }
+    .btn-primary.loading .btn-text { opacity: 0; }
+    .spinner {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .btn-primary.loading .spinner { display: block; }
+    @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: var(--border);
+      font-size: 0.8rem;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .link-btn {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .link-btn:hover { border-color: var(--ink); background: var(--cream); }
+
+    .bottom-text {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .bottom-text a {
+      color: var(--ink);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 12px 20px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 100;
+      max-width: 320px;
+      text-align: center;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    #toast.error { background: #8b1d1d; }
+    #toast.success { background: #1d5c3a; }
+
+    /* Mode toggle */
+    .mode-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 28px;
+      border-bottom: 1.5px solid var(--border);
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1.5px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .mode-tab.active {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    @media (max-width: 700px) {
+      .left-panel { display: none; }
+      .right-panel { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left -->
+  <div class="left-panel">
+    <div class="brand-block">
+      <div class="brand-name">Mind<span>Pen</span></div>
+      <div class="brand-tagline">Your thoughts, written well</div>
+      <div class="deco-line"></div>
+      <div class="quote-block">
+        "Writing is thinking.<br>To write well is to think clearly."
+      </div>
+      <div class="quote-attr">— David McCullough</div>
+    </div>
+  </div>
+
+  <!-- Right -->
+  <div class="right-panel">
+    <div class="form-container">
+      <div class="form-eyebrow">Welcome</div>
+      <div class="form-title" id="form-title">Sign in to<br>your journal</div>
+
+      <div class="mode-tabs">
+        <div class="mode-tab active" id="tab-login" onclick="switchMode('login')">Sign In</div>
+        <div class="mode-tab" id="tab-signup" onclick="switchMode('signup')">Create Account</div>
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="you@example.com" />
+      </div>
+
+      <div class="field" id="field-password">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" />
+      </div>
+
+      <div class="field" id="field-confirm" style="display:none">
+        <label>Confirm Password</label>
+        <input type="password" id="confirm-password" placeholder="••••••••" />
+      </div>
+
+      <button class="btn-primary" id="main-btn" onclick="handleAuth()">
+        <span class="btn-text" id="btn-label">Sign In</span>
+        <div class="spinner"></div>
+      </button>
+
+      <div class="divider">or</div>
+
+      <button class="link-btn" onclick="handleMagicLink()">Send magic link (passwordless)</button>
+
+      <div class="bottom-text" id="bottom-text">
+        Don't have an account? <a onclick="switchMode('signup')">Create one</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // ── Supabase init ──────────────────────────────────────────
+    const SUPABASE_URL  = window.__ENV__?.SUPABASE_URL  || 'YOUR_SUPABASE_URL';
+    const SUPABASE_ANON = window.__ENV__?.SUPABASE_ANON || 'YOUR_SUPABASE_ANON_KEY';
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // ── State ──────────────────────────────────────────────────
+    let mode = 'login'; // 'login' | 'signup'
+
+    function switchMode(m) {
+      mode = m;
+      document.getElementById('tab-login').classList.toggle('active', m === 'login');
+      document.getElementById('tab-signup').classList.toggle('active', m === 'signup');
+      document.getElementById('field-confirm').style.display = m === 'signup' ? 'block' : 'none';
+      document.getElementById('btn-label').textContent = m === 'login' ? 'Sign In' : 'Create Account';
+      document.getElementById('form-title').innerHTML = m === 'login'
+        ? 'Sign in to<br>your journal'
+        : 'Start your<br>MindPen journey';
+      document.getElementById('bottom-text').innerHTML = m === 'login'
+        ? 'Don\'t have an account? <a onclick="switchMode(\'signup\')">Create one</a>'
+        : 'Already have an account? <a onclick="switchMode(\'login\')">Sign in</a>';
+    }
+
+    // ── Toast ──────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'show ' + type;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.className = '', 3500);
+    }
+
+    // ── Auth ───────────────────────────────────────────────────
+    async function handleAuth() {
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm  = document.getElementById('confirm-password').value;
+
+      if (!email || !password) { showToast('이메일과 비밀번호를 입력해주세요.', 'error'); return; }
+      if (mode === 'signup' && password !== confirm) { showToast('비밀번호가 일치하지 않습니다.', 'error'); return; }
+
+      const btn = document.getElementById('main-btn');
+      btn.disabled = true;
+      btn.classList.add('loading');
+
+      try {
+        let result;
+        if (mode === 'login') {
+          result = await sb.auth.signInWithPassword({ email, password });
+        } else {
+          result = await sb.auth.signUp({ email, password });
+        }
+
+        if (result.error) throw result.error;
+
+        if (mode === 'signup') {
+          showToast('확인 이메일을 보냈습니다. 메일함을 확인해주세요! ✉️', 'success');
+        } else {
+          showToast('로그인 성공! 이동 중...', 'success');
+          setTimeout(() => window.location.href = 'dashboard.html', 1000);
+        }
+      } catch (err) {
+        showToast(err.message || '오류가 발생했습니다.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+      }
+    }
+
+    async function handleMagicLink() {
+      const email = document.getElementById('email').value.trim();
+      if (!email) { showToast('이메일을 먼저 입력해주세요.', 'error'); return; }
+
+      try {
+        const { error } = await sb.auth.signInWithOtp({ email });
+        if (error) throw error;
+        showToast('매직링크를 보냈습니다! 이메일을 확인해주세요. ✨', 'success');
+      } catch (err) {
+        showToast(err.message || '오류가 발생했습니다.', 'error');
+      }
+    }
+
+    // Enter key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleAuth();
+    });
+
+    // Already logged in? redirect
+    (async () => {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) window.location.href = 'dashboard.html';
+    })();
+  </script>
+</body>
+</html>
