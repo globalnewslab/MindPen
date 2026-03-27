@@ -331,39 +331,20 @@
   <div class="right-panel">
     <div class="form-container">
       <div class="form-eyebrow">환영합니다</div>
-      <div class="form-title" id="form-title">저널에<br>로그인하기</div>
-
-      <div class="mode-tabs">
-        <div class="mode-tab active" id="tab-login" onclick="switchMode('login')">로그인</div>
-        <div class="mode-tab" id="tab-signup" onclick="switchMode('signup')">회원가입</div>
-      </div>
+      <div class="form-title">이메일로<br>시작하기</div>
 
       <div class="field">
         <label>이메일</label>
         <input type="email" id="email" placeholder="you@example.com" />
       </div>
 
-      <div class="field" id="field-password">
-        <label>비밀번호</label>
-        <input type="password" id="password" placeholder="••••••••" />
-      </div>
-
-      <div class="field" id="field-confirm" style="display:none">
-        <label>비밀번호 확인</label>
-        <input type="password" id="confirm-password" placeholder="••••••••" />
-      </div>
-
-      <button class="btn-primary" id="main-btn" onclick="handleAuth()">
-        <span class="btn-text" id="btn-label">로그인</span>
+      <button class="btn-primary" id="main-btn" onclick="handleMagicLink()">
+        <span class="btn-text">매직링크 받기</span>
         <div class="spinner"></div>
       </button>
 
-      <div class="divider">또는</div>
-
-      <button class="link-btn" onclick="handleMagicLink()">매직링크로 로그인 (비밀번호 없이)</button>
-
-      <div class="bottom-text" id="bottom-text">
-        계정이 없으신가요? <a onclick="switchMode('signup')">회원가입</a>
+      <div class="bottom-text" style="margin-top:20px;">
+        이메일로 로그인 링크를 보내드려요.<br>비밀번호가 필요 없어요 ✨
       </div>
     </div>
   </div>
@@ -438,6 +419,18 @@
       } finally {
         btn.disabled = false;
         btn.classList.remove('loading');
+      }
+    }
+
+    async function handleGoogle() {
+      try {
+        const { error } = await sb.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.origin + '/dashboard.html' }
+        });
+        if (error) throw error;
+      } catch (err) {
+        showToast(err.message || '오류가 발생했습니다.', 'error');
       }
     }
 
