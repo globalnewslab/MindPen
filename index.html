@@ -766,32 +766,7 @@ footer {
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-// EmailJS 초기화
-emailjs.init('여기에_PUBLIC_KEY_입력');
-
-// 문의 폼 전송
-async function sendContact() {
-  const name = document.getElementById('contact-name').value.trim();
-  const phone = document.getElementById('contact-phone').value.trim();
-  const grade = document.getElementById('contact-grade').value;
-  const message = document.getElementById('contact-message').value.trim();
-  if (!name || !phone || !message) { alert('이름, 연락처, 문의 내용은 필수입니다.'); return; }
-  try {
-    await emailjs.send('여기에_SERVICE_ID_입력', '여기에_TEMPLATE_ID_입력', { from_name: name, phone, grade, message });
-    document.getElementById('contact-success').style.display = 'block';
-    document.getElementById('contact-error').style.display = 'none';
-    document.getElementById('contact-name').value = '';
-    document.getElementById('contact-phone').value = '';
-    document.getElementById('contact-grade').value = '';
-    document.getElementById('contact-message').value = '';
-  } catch (error) {
-    document.getElementById('contact-error').style.display = 'block';
-    document.getElementById('contact-success').style.display = 'none';
-  }
-}
-
 // 스크롤 애니메이션
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry, i) => {
@@ -801,29 +776,6 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-// 플랜 전환
-let currentPlan = 'basic';
-function switchPlan(plan) {
-  currentPlan = plan;
-  resetTrial();
-  const basicTab = document.getElementById('tab-basic');
-  const premiumTab = document.getElementById('tab-premium');
-  const planLabel = document.getElementById('plan-label');
-  if (plan === 'basic') {
-    basicTab.style.background = 'var(--gold)';
-    basicTab.style.color = 'var(--navy)';
-    premiumTab.style.background = 'transparent';
-    premiumTab.style.color = 'rgba(255,255,255,0.6)';
-    planLabel.textContent = '✦ 기본 플랜 — AI 즉시 피드백';
-  } else {
-    premiumTab.style.background = 'var(--gold)';
-    premiumTab.style.color = 'var(--navy)';
-    basicTab.style.background = 'transparent';
-    basicTab.style.color = 'rgba(255,255,255,0.6)';
-    planLabel.textContent = '✦ 심화 플랜 — AI 심층 첨삭 + 개선 문장 제시';
-  }
-}
 
 // 탭 전환
 let currentPlan = 'basic';
