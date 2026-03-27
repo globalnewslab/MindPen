@@ -513,7 +513,7 @@ footer {
 
 <!-- NAV -->
 <nav>
-  <span class="nav-logo">Mind<span>Pen</span></span>
+  <a href="/" style="text-decoration:none;"><span class="nav-logo">Mind<span>Pen</span></span></a>
   <div class="nav-links">
     <a href="#why">소개</a>
     <a href="#trial">무료 체험</a>
@@ -603,13 +603,14 @@ footer {
     </div>
     <div id="question-box" class="trial-question"></div>
     <div id="question-loading" class="trial-loading">📝 문제 생성 중...</div>
+      <button id="print-question-btn" onclick="printQuestion()" style="display:none;margin-top:8px;margin-bottom:4px;padding:8px 18px;background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.2);border-radius:4px;font-size:0.8rem;font-weight:600;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">🖨 문제만 출력하기</button>
     <textarea id="answer" class="trial-textarea" placeholder="여기에 답안을 작성하세요..."></textarea>
     <button id="feedback-btn" class="trial-submit" onclick="getFeedback()">피드백 받기 →</button>
     <div id="feedback-loading" class="trial-feedback-loading">⚡ 피드백 분석 중...</div>
     <div id="feedback-result" class="trial-feedback"></div>
       <button id="print-btn" onclick="printFeedback()" style="display:none;margin-top:12px;padding:10px 20px;background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:4px;font-size:0.85rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">🖨 피드백 출력하기</button>
     <div class="trial-notice">
-      <strong>안내:</strong> 무료 체험은 1회 제공됩니다. 전체 커리큘럼 이용 및 전문가 첨삭 서비스는 수강 신청 후 이용 가능합니다.
+      <strong>안내:</strong> 무료 체험은 1회 제공됩니다. 전체 커리큘럼 이용 및 전문가 첨삭 서비스는 수강 신청 후 이용 가능합니다.<br>🖨 문제 출력 후 종이에 직접 쓰고 싶은 학생도 출력 기능을 이용할 수 있습니다.
     </div>
   </div>
 </section>
@@ -813,6 +814,7 @@ async function getQuestion() {
     document.getElementById('question-box').textContent = data.question;
     document.getElementById('answer').style.display = 'block';
     document.getElementById('feedback-btn').style.display = 'block';
+    document.getElementById('print-question-btn').style.display = 'inline-block';
   } catch (error) {
     document.getElementById('question-loading').style.display = 'none';
     console.log(error);
@@ -843,7 +845,36 @@ async function getFeedback() {
   }
 }
 
-// 출력
+// 문제만 출력
+function printQuestion() {
+  const question = document.getElementById('question-box').textContent;
+  const level = document.getElementById('level').value;
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head>
+    <meta charset="UTF-8">
+    <title>MindPen 논술 문제</title>
+    <style>
+      body { font-family: 'Noto Sans KR', sans-serif; max-width: 700px; margin: 60px auto; padding: 0 20px; color: #1a1a2e; line-height: 1.8; }
+      h1 { font-size: 1.4rem; color: #0D1B2A; border-bottom: 2px solid #C9973A; padding-bottom: 10px; margin-bottom: 24px; }
+      .label { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #C9973A; margin-bottom: 6px; }
+      .box { background: #f7f7f7; border-left: 3px solid #C9973A; padding: 16px; margin-bottom: 20px; font-size: 0.9rem; white-space: pre-line; }
+      .answer-box { border: 1px solid #ddd; border-radius: 4px; padding: 16px; min-height: 200px; margin-bottom: 20px; font-size: 0.9rem; color: #ccc; }
+      .footer { margin-top: 40px; font-size: 0.75rem; color: #aaa; text-align: center; }
+    </style>
+    </head><body>
+    <h1>MindPen 논술 문제</h1>
+    <div class="label">레벨</div><div class="box">${level}</div>
+    <div class="label">오늘의 문제</div><div class="box">${question}</div>
+    <div class="label">내 답안 (여기에 직접 쓰세요)</div><div class="answer-box"></div>
+    <div class="footer">MindPen · 논술 전문 AI 학습 플랫폼</div>
+    </body></html>
+  `);
+  win.document.close();
+  win.print();
+}
+
+// 전체 출력
 function printFeedback() {
   const question = document.getElementById('question-box').textContent;
   const answer = document.getElementById('answer').value;
@@ -883,6 +914,7 @@ function resetTrial() {
   document.getElementById('feedback-result').style.display = 'none';
   document.getElementById('feedback-loading').style.display = 'none';
   document.getElementById('print-btn').style.display = 'none';
+  document.getElementById('print-question-btn').style.display = 'none';
 }
 </script>
 </body>
